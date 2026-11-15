@@ -1,0 +1,38 @@
+server:
+  port: 8000
+  error:
+    include-message: always
+spring:
+  datasource:
+    url: ${DB_URL:}
+    username: ${DB_USER:}
+    password: ${DB_PASSWORD:}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  sql:
+    init:
+      mode: always
+gemini:
+  api-key: ${GEMINI_API_KEY:}
+  chat-model: ${GEMINI_CHAT_MODEL:gemini-3.8-flash}
+  embed-model: gemini-embedding-001
+  embed-dim: 768
+app:
+  storage-dir: ${STORAGE_DIR:}
+  max-chunks: 1500
+  max-agent-steps: 8
+  embed-delay-ms: 1200
+  jwt-secret: ${JWT_SECRET:}
+  jwt-hours: 72
+  signup-code: ${SIGNUP_CODE:}
+  max-repos-per-user: 3
+  chats-per-hour: 30
+  rate-limit:
+    login-attempts: 10
+    login-window-minutes: 15

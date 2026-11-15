@@ -1,0 +1,41 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: margin
+      POSTGRES_USER: margin
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Put DB_PASSWORD in the .env file}
+    ports: ["127.0.0.1:5433:5432"]
+    volumes: [ pgdata:/var/lib/postgresql/data ]
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U margin -d margin" ]
+      interval: 3s
+      retries: 20
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/margin
+      DB_USER: margin
+      DB_PASSWORD: ${DB_PASSWORD:?Put DB_PASSWORD in the .env file}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:?Put GEMINI_API_KEY in the .env file}
+      JWT_SECRET: ${JWT_SECRET:?Put JWT_SECRET (32+ characters) in the .env file}
+      SIGNUP_CODE: ${SIGNUP_CODE:-}
+      STORAGE_DIR: /data/repos
+    depends_on:
+      db: { condition: service_healthy }
+    volumes: [repos:/data/repos]
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    ports: ["127.0.0.1:3000:80"]
+    depends_on: [backend]
+
+volumes:
+  pgdata:
+  repos:

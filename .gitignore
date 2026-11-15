@@ -1,0 +1,24 @@
+# secrets: never commit these
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+id_ed25519*
+id_rsa*
+*.p12
+*.jks
+
+# dependencies and build output
+node_modules/
+dist/
+build/
+target/
+*.log
+
+# editors and system files
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
